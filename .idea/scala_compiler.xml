@@ -8,5 +8,12 @@
         <parameter value="-target:jvm-1.8" />
       </parameters>
     </profile>
+    <profile name="Gradle 2" modules="Pong-Game.main,Pong-Game.test">
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+      <parameters>
+        <parameter value="-target:jvm-11" />
+      </parameters>
+    </profile>
   </component>
 </project>

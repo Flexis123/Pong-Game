@@ -13,7 +13,7 @@ class GameLogic(val random: RandomGenerator,
 
   var playerL: Player = Player(PlayerLength, 0, gridDims)
   var playerR: Player = Player(PlayerLength, gridDims.width - 1, gridDims)
-  private var ball: Ball = Ball()
+  private var ball: Ball = null
 
   def gameOver: Boolean = false
 
@@ -52,6 +52,8 @@ object GameLogic {
   val FramesPerSecond: Int = 30// change this to increase/decrease speed of game
 
   val PlayerLength: Int = 3
+  val BallVelocityOffsetOnPlayerHit = Velocity(0.25, 0.25)
+  val BallBaseVelocity = Velocity(1.0, 1.0)
 
   val DrawSizeFactor = 1.0 // increase this to make the game bigger (for high-res screens)
   // or decrease to make game smaller
