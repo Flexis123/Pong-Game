@@ -29,10 +29,10 @@ class PongGame extends GameBase {
   // this function is wrongly named draw by processing (is called on each update next to drawing)
   override def draw(): Unit = {
     drawGrid()
-    if (gameLogic.canStart) updateState()
+    if (gameLogic.gameState.canStart) updateState()
     else drawGameStartScreen()
 
-    if (gameLogic.gameOver) drawGameOverScreen()
+    if (gameLogic.gameState.gameOver) drawGameOverScreen()
   }
 
   def drawGameOverScreen(): Unit = {
@@ -43,8 +43,8 @@ class PongGame extends GameBase {
   def drawGameStartScreen(): Unit = {
     setFillColor(Color.White)
 
-    var text = "Player left ready: " + gameLogic.playerL.isReady + "\n"
-    text += "Player right ready: " + gameLogic.playerR.isReady
+    var text = "Player left ready: " + gameLogic.gameState.playerL.isReady + "\n"
+    text += "Player right ready: " + gameLogic.gameState.playerR.isReady
 
     drawTextCentered(text, size = 20, screenArea.center)
   }

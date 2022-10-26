@@ -11,24 +11,22 @@ import snake.logic.GameLogic._
 class GameLogic(val random: RandomGenerator,
                 val gridDims : Dimensions){
 
-  var playerL: Player = Player(PlayerLength, 0, gridDims)
-  var playerR: Player = Player(PlayerLength, gridDims.width - 1, gridDims)
+  private var playerL: Player = Player(PlayerLength, 0, gridDims)
+  private var playerR: Player = Player(PlayerLength, gridDims.width - 1, gridDims)
   private var ball: Ball = spawnNewBall()
-  private var gameState = GameState(playerL, playerR, ball)
+  var gameState: GameState = GameState(playerL, playerR, ball)
 
-  def gameOver: Boolean = gameState.gameOver
+  private def updateGameState(): Unit =
+    gameState = GameState(playerL, playerR, ball, gameState.stepNum + 1)
 
-  //ball movement
   def step(): Unit = {
-    if(!gameOver){
-      playerL = playerL.move()
-      playerR = playerR.move()
+    if(!gameState.gameOver){
+     playerL = playerL.move()
+     playerR = playerR.move()
 
-      ball = ball.move()
-      ball = ball.updateVelocity(gameState)
-      println(ball.velocity)
+      ball = ball.move(gameState)
 
-      gameState = GameState(playerL, playerR, ball)
+      updateGameState()
     }
   }
 
@@ -38,19 +36,18 @@ class GameLogic(val random: RandomGenerator,
       case 2 => playerR = doIfPresent(playerR)
       case _ => ()
     }
+    updateGameState()
   }
 
   def setReady(playerId: Int): Unit = updatePlayer(playerId, p => p.setAsReady())
-
-  def canStart: Boolean = gameState.canStart
 
   def moveUp(playerId: Int, mvu: Boolean): Unit = updatePlayer(playerId, p => p.setMovingUp(mvu))
 
   def moveDown(playerId: Int, mvd: Boolean): Unit = updatePlayer(playerId, p => p.setMovingDown(mvd))
 
   def spawnNewBall(): Ball = {
-    val pos = Point((gridDims.width - 1).toFloat / 2.0f, random.randomInt(gridDims.height).toFloat)
-    Ball(pos, BallBaseVelocity, BallVelocityOffsetOnPlayerHit, gridDims)
+    val pos = Point((gridDims.width - 1) / 2, random.randomInt(gridDims.height))
+    Ball(pos, BallVelocity, gridDims)
   }
 
   def getCellType(p: Point): CellType = {
@@ -66,11 +63,10 @@ object GameLogic {
 
   val FramesPerSecond: Int = 60// change this to increase/decrease speed of game
 
-  val PlayerLength: Int = 3
-  val BallVelocityOffsetOnPlayerHit: Point = Point(0.5f, 0.5f)
-  val BallBaseVelocity: Point = Point(-0.5f, 0.5f)
+  val PlayerLength: Int = 7
+  val BallVelocity: Point = Point(1, 1)
 
-  val DrawSizeFactor = 1.0 // increase this to make the game bigger (for high-res screens)
+  val DrawSizeFactor = 0.7// increase this to make the game bigger (for high-res screens)
   // or decrease to make game smaller
 
   // These are the dimensions used when playing the game.
@@ -84,7 +80,7 @@ object GameLogic {
   // In your code only use gridDims.width and gridDims.height
   // do NOT use DefaultGridDims.width and DefaultGridDims.height
   val DefaultHeight = 40
-  val DefaultWidth = (DefaultHeight * 1.65).toInt
+  val DefaultWidth = (DefaultHeight * 1.5).toInt
   val DefaultGridDims
     : Dimensions =
     Dimensions(width = DefaultWidth, height = DefaultHeight)  // you can adjust these values to play on a different sized board

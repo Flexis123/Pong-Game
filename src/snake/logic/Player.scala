@@ -29,14 +29,24 @@ case class Player(body: Set[Point], griDims: Dimensions , isReady: Boolean,
 
 object Player{
   def apply(length: Int, spawnX: Int, griDims: Dimensions): Player = {
-    var startPoint =  Point(spawnX, griDims.height / 2 - length)
-    var body: Set[Point] = Set()
+    val centerPoint =  Point(spawnX, griDims.height / 2)
 
-    for (_ <- 0 until length){
-      body = body + startPoint
-      startPoint = startPoint + Point(0, -1)
-    }
+    var body: Set[Point] = buildHalf(centerPoint, Point(0, -1), length) ++ buildHalf(centerPoint, Point(0, 1), length)
+    body = body + centerPoint
+
     Player(body, griDims, isReady = false, isMovingUp = false, isMovingDown = false, 0)
+  }
+
+  def buildHalf(startPoint: Point, offset: Point, length: Int): Set[Point] = {
+    var sPoint = startPoint
+    val halfBody = (length - 1) / 2
+    var halfBodyPoints: Set[Point] = Set()
+
+    for (_ <- 0 until halfBody) {
+      sPoint = sPoint + offset
+      halfBodyPoints = halfBodyPoints + sPoint
+    }
+    halfBodyPoints
   }
 
 

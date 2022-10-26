@@ -57,11 +57,6 @@ binary dependencies:
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\engine\random\ScalaRandomGen.scala -> C:\Users\alexis\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.13.8\5a865f03a794b27e6491740c4c419a19e4511a3d\scala-library-2.13.8.jar
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Program Files\Eclipse Adoptium\jdk-8.0.345.1-hotspot\jre\lib\rt.jar
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.13.8\5a865f03a794b27e6491740c4c419a19e4511a3d\scala-library-2.13.8.jar
-   C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\build\classes\scala\main\engine\GameBase.class
-   C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\build\classes\scala\main\engine\random\ScalaRandomGen.class
-   C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\build\classes\scala\main\snake\logic\BallBody.class
-   C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\build\classes\scala\main\snake\logic\CellType.class
-   C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\build\classes\scala\main\snake\logic\PlayerBody.class
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\lib\core.jar
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Ball.scala -> C:\Program Files\Eclipse Adoptium\jdk-8.0.345.1-hotspot\jre\lib\rt.jar
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Ball.scala -> C:\Users\alexis\.gradle\caches\modules-2\files-2.1\org.scala-lang\scala-library\2.13.8\5a865f03a794b27e6491740c4c419a19e4511a3d\scala-library-2.13.8.jar
@@ -100,6 +95,7 @@ source dependencies:
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\CellType.scala
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Dimensions.scala
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\GameLogic.scala
+   C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\GameState.scala
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Player.scala
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\game\PongGame.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Point.scala
    C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Ball.scala -> C:\Users\alexis\Desktop\pong\gamebase-snake\src\snake\logic\Dimensions.scala
