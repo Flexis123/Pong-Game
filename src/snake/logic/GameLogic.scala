@@ -13,14 +13,23 @@ class GameLogic(val random: RandomGenerator,
 
   var playerL: Player = Player(PlayerLength, 0, gridDims)
   var playerR: Player = Player(PlayerLength, gridDims.width - 1, gridDims)
-  private var ball: Ball = null
+  private var ball: Ball = spawnNewBall()
+  private var gameState = GameState(playerL, playerR, ball)
 
-  def gameOver: Boolean = false
+  def gameOver: Boolean = gameState.gameOver
 
   //ball movement
   def step(): Unit = {
-    playerL = playerL.move()
-    playerR = playerR.move()
+    if(!gameOver){
+      playerL = playerL.move()
+      playerR = playerR.move()
+
+      ball = ball.move()
+      ball = ball.updateVelocity(gameState)
+      println(ball.velocity)
+
+      gameState = GameState(playerL, playerR, ball)
+    }
   }
 
   private def updatePlayer(playerId: Int, doIfPresent: Player => Player): Unit = {
@@ -33,14 +42,20 @@ class GameLogic(val random: RandomGenerator,
 
   def setReady(playerId: Int): Unit = updatePlayer(playerId, p => p.setAsReady())
 
-  def canStart: Boolean = playerL.isReady && playerR.isReady
+  def canStart: Boolean = gameState.canStart
 
   def moveUp(playerId: Int, mvu: Boolean): Unit = updatePlayer(playerId, p => p.setMovingUp(mvu))
 
   def moveDown(playerId: Int, mvd: Boolean): Unit = updatePlayer(playerId, p => p.setMovingDown(mvd))
 
+  def spawnNewBall(): Ball = {
+    val pos = Point((gridDims.width - 1).toFloat / 2.0f, random.randomInt(gridDims.height).toFloat)
+    Ball(pos, BallBaseVelocity, BallVelocityOffsetOnPlayerHit, gridDims)
+  }
+
   def getCellType(p: Point): CellType = {
     if(playerL.body.contains(p) || playerR.body.contains(p)) PlayerBody
+    else if(ball.position == p) BallBody
     else Empty
   }
 
@@ -49,11 +64,11 @@ class GameLogic(val random: RandomGenerator,
 /** GameLogic companion object */
 object GameLogic {
 
-  val FramesPerSecond: Int = 30// change this to increase/decrease speed of game
+  val FramesPerSecond: Int = 60// change this to increase/decrease speed of game
 
   val PlayerLength: Int = 3
-  val BallVelocityOffsetOnPlayerHit = Velocity(0.25, 0.25)
-  val BallBaseVelocity = Velocity(1.0, 1.0)
+  val BallVelocityOffsetOnPlayerHit: Point = Point(0.5f, 0.5f)
+  val BallBaseVelocity: Point = Point(-0.5f, 0.5f)
 
   val DrawSizeFactor = 1.0 // increase this to make the game bigger (for high-res screens)
   // or decrease to make game smaller
@@ -68,7 +83,7 @@ object GameLogic {
   //
   // In your code only use gridDims.width and gridDims.height
   // do NOT use DefaultGridDims.width and DefaultGridDims.height
-  val DefaultHeight = 25
+  val DefaultHeight = 40
   val DefaultWidth = (DefaultHeight * 1.65).toInt
   val DefaultGridDims
     : Dimensions =

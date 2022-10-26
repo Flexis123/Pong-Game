@@ -2,7 +2,7 @@ package snake.logic
 
 // you can alter this file!
 
-case class Point(x : Double, y : Double){
+case class Point(x: Float, y: Float) {
   def +(point: Point): Point = Point(x + point.x, y + point.y)
   def -(point: Point): Point = Point(x - point.x, y - point.y)
 

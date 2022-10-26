@@ -3,18 +3,19 @@
 
 package snake.game
 
-import engine.GameBase
-import engine.graphics.Color._
-import engine.graphics.{Color, Point, Rectangle}
-import engine.random.ScalaRandomGen
-import processing.core.PApplet
+
+import java.awt.event
+import processing.core.{PApplet, PConstants}
 import processing.event.KeyEvent
 
 import java.awt.event.KeyEvent._
-import snake.game.PongGame._
-import snake.logic.{BallBody, CellType, Dimensions, GameLogic, PlayerBody, Point => GridPoint}
+import engine.GameBase
+import engine.graphics.{Color, Point, Rectangle}
+import engine.graphics.Color._
+import engine.random.ScalaRandomGen
+import snake.game.PongGame.{HeightCellInPixels, WidthCellInPixels}
+import snake.logic.{BallBody, CellType, Dimensions, GameLogic, PlayerBody}
 
-import java.awt.event
 
 class PongGame extends GameBase {
 
@@ -53,7 +54,7 @@ class PongGame extends GameBase {
     val widthPerCell = screenArea.width / gridDimensions.width
     val heightPerCell = screenArea.height / gridDimensions.height
 
-    def getCell(p : GridPoint): Rectangle = {
+    def getCell(p : snake.logic.Point): Rectangle = {
       val leftUp = Point(screenArea.left + p.x * widthPerCell,
         screenArea.top + p.y * heightPerCell)
       Rectangle(leftUp, widthPerCell, heightPerCell)

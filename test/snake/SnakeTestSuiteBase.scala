@@ -53,7 +53,7 @@ case class SnakeLogicWrapper(logic: GameLogic)
   }
 
   def getCell(x : Int, y : Int ): SnakeGridTypeWrapper =
-    SnakeGridTypeWrapper(logic.getCellType(Point(x,y)))
+    SnakeGridTypeWrapper(logic.getCellType(Point(x, y)))
 
   override def nrRows: Int = logic.gridDims.height
   override def nrColumns: Int = logic.gridDims.width
