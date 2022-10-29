@@ -12,15 +12,12 @@ class GameBase   extends PApplet {
   // inner class: can call current time of outer class
   class UpdateTimer(val framesPerSecond: Float) {
 
-    private var _frameDuration: Float = 1000 / framesPerSecond // ms
-    private var _nextFrame: Float = Float.MaxValue
+    val frameDuration: Float = 1000 / framesPerSecond // ms
+    var nextFrame: Float = Float.MaxValue
 
-    def init(): Unit = _nextFrame = currentTime() + _frameDuration
-    def timeForNextFrame(): Boolean = currentTime() >= _nextFrame
-    def advanceFrame(): Unit = _nextFrame = _nextFrame + _frameDuration
-
-    def setFramesPerSecond(fps: Float) = 1000 / fps
-
+    def init(): Unit = nextFrame = currentTime() + frameDuration
+    def timeForNextFrame(): Boolean = currentTime() >= nextFrame
+    def advanceFrame(): Unit = nextFrame = nextFrame + frameDuration
   }
 
   // ===Processing Wrappers & Abstractions===

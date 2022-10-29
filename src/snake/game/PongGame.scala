@@ -4,50 +4,78 @@
 package snake.game
 
 
-import java.awt.event
-import processing.core.{PApplet, PConstants}
-import processing.event.KeyEvent
-
-import java.awt.event.KeyEvent._
 import engine.GameBase
-import engine.graphics.{Color, Point, Rectangle}
 import engine.graphics.Color._
+import engine.graphics.{Color, Point, Rectangle}
 import engine.random.ScalaRandomGen
+import processing.core.PApplet
+import processing.event.KeyEvent
 import snake.game.PongGame.{HeightCellInPixels, WidthCellInPixels}
-import snake.logic.{BallBody, CellType, Dimensions, GameLogic, PlayerBody}
+import snake.logic._
+
+import java.awt.event
+import java.awt.event.KeyEvent._
 
 
 class PongGame extends GameBase {
 
-  var gameLogic = new GameLogic(new ScalaRandomGen(),GameLogic.DefaultGridDims)
+  var gameLogic = new GameLogic(new ScalaRandomGen(),GameLogic.DefaultGridDims).init()
   val updateTimer = new UpdateTimer(GameLogic.FramesPerSecond.toFloat)
   val gridDimensions : Dimensions =  gameLogic.gridDims
   val widthInPixels: Int = (GameLogic.DrawSizeFactor * WidthCellInPixels * gridDimensions.width).ceil.toInt
   val heightInPixels: Int = (GameLogic.DrawSizeFactor *  HeightCellInPixels * gridDimensions.height).ceil.toInt
   val screenArea: Rectangle = Rectangle(Point(0, 0), widthInPixels.toFloat, heightInPixels.toFloat)
 
+  val middleX: Float = (widthInPixels - 1).toFloat / 2.toFloat
+  val halfMiddleX: Float = middleX / 2f
+  val lScorePos: Point = Point(middleX - halfMiddleX, 8f)
+  val rScorePos: Point = Point(middleX + halfMiddleX, 8f)
+
   // this function is wrongly named draw by processing (is called on each update next to drawing)
   override def draw(): Unit = {
+    val status = gameLogic.gameState.gameStatus
     drawGrid()
-    if (gameLogic.gameState.canStart) updateState()
-    else drawGameStartScreen()
+    status match {
+      case ReadyUpStage() => drawGameStartScreen()
+      case CountdownStage(count) => drawCountdown(count)
+      case GameOver() => drawGameOverScreen()
+      case _ => ()
+    }
+    updateState()
+  }
 
-    if (gameLogic.gameState.gameOver) drawGameOverScreen()
+  def drawCountdown(count: Int): Unit = {
+    setFillColor(Color.White)
+    drawTextCentered(count.toString, 20, screenArea.center)
+  }
+
+  def drawScore(pos: Point, player: Player): Unit = {
+    setFillColor(Color.White)
+    drawText(player.score.toString, pos, withShadow = false)
   }
 
   def drawGameOverScreen(): Unit = {
     setFillColor(Red)
-    drawTextCentered("GAME OVER!", 20, screenArea.center)
+    drawTextCentered(
+      "GAME OVER!\n " + gameLogic.gameState.leader.name + " has won" +"\npress 'r' to restart",
+      20,
+      screenArea.center
+    )
   }
 
   def drawGameStartScreen(): Unit = {
     setFillColor(Color.White)
 
-    var text = "Player left ready: " + gameLogic.gameState.playerL.isReady + "\n"
-    text += "Player right ready: " + gameLogic.gameState.playerR.isReady
+    val lPlayer = gameLogic.gameState.playerL
+    val rPlayer = gameLogic.gameState.playerR
+
+    val text = buildPlayerReadyString(lPlayer) + buildPlayerReadyString(rPlayer)
 
     drawTextCentered(text, size = 20, screenArea.center)
   }
+
+  def buildPlayerReadyString(player: Player): String =
+   player.name + " ready: " + player.isReady + "\n"
 
   def drawGrid(): Unit = {
 
@@ -81,12 +109,15 @@ class PongGame extends GameBase {
       drawCell(getCell(p), gameLogic.getCellType(p))
     }
 
+    drawScore(lScorePos, gameLogic.gameState.playerL)
+    drawScore(rScorePos, gameLogic.gameState.playerR)
+
   }
 
   private def getPlayerId(event: KeyEvent): Int = {
     event.getKeyCode match {
-      case VK_W | VK_S | VK_1 => 1
-      case VK_UP | VK_DOWN | VK_0 => 2
+      case VK_W | VK_S | VK_1 => GameLogic.LeftPlayerId
+      case VK_UP | VK_DOWN | VK_0 => GameLogic.RightPlayerId
       case _ => 0
     }
   }
@@ -113,6 +144,7 @@ class PongGame extends GameBase {
     event.getKeyCode match {
       case VK_0 | VK_1 => gameLogic.setReady(getPlayerId(event))
       case VK_W | VK_S | VK_DOWN | VK_UP => startStopMove(event, startMove = true)
+      case VK_R => gameLogic = gameLogic.init()
       case _ => ()
     }
   }

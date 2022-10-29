@@ -1,7 +1,5 @@
 package snake.logic
 
-import snake.logic
-
 case class Ball(position: Point, velocity: Point,gridDims: Dimensions){
 
   def move(gameState: GameState): Ball = {

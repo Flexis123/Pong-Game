@@ -1,7 +1,8 @@
 package snake.logic
 
-import engine.random.{RandomGenerator, ScalaRandomGen}
+import engine.random.RandomGenerator
 import snake.logic.GameLogic._
+
 
 /** To implement Snake, complete the ``TODOs`` below.
  *
@@ -11,29 +12,42 @@ import snake.logic.GameLogic._
 class GameLogic(val random: RandomGenerator,
                 val gridDims : Dimensions){
 
-  private var playerL: Player = Player(PlayerLength, 0, gridDims)
-  private var playerR: Player = Player(PlayerLength, gridDims.width - 1, gridDims)
-  private var ball: Ball = spawnNewBall()
-  var gameState: GameState = GameState(playerL, playerR, ball)
+  private var playerL: Player = null
+  private var playerR: Player = null
+  private var ball: Ball = null
+  var gameState: GameState = null
 
   private def updateGameState(): Unit =
-    gameState = GameState(playerL, playerR, ball, gameState.stepNum + 1)
+    gameState = gameState.next(playerL, playerR, ball)
 
+  private def movePlayers(): Unit = {
+    playerL = playerL.move()
+    playerR = playerR.move()
+  }
   def step(): Unit = {
-    if(!gameState.gameOver){
-     playerL = playerL.move()
-     playerR = playerR.move()
+    gameState.gameStatus match{
+      case Ongoing(canSpawnNewBall) =>
 
-      ball = ball.move(gameState)
+        if(canSpawnNewBall) {
+          if (ball.position.x <= 0) playerR = playerR.incrementScore()
+          else playerL = playerL.incrementScore()
+          ball = spawnNewBall()
+        }
+        else ball = ball.move(gameState)
 
-      updateGameState()
+        movePlayers()
+
+      case OngoingNewBall() => movePlayers()
+      case _ => ()
     }
+
+    updateGameState()
   }
 
   private def updatePlayer(playerId: Int, doIfPresent: Player => Player): Unit = {
     playerId match {
-      case 1 => playerL = doIfPresent(playerL)
-      case 2 => playerR = doIfPresent(playerR)
+      case LeftPlayerId => playerL = doIfPresent(playerL)
+      case RightPlayerId => playerR = doIfPresent(playerR)
       case _ => ()
     }
     updateGameState()
@@ -50,12 +64,20 @@ class GameLogic(val random: RandomGenerator,
     Ball(pos, BallVelocity, gridDims)
   }
 
+  def init(): GameLogic = {
+    playerL = Player(LeftPlayerName, PlayerLength, 0, gridDims)
+    playerR = Player(RightPlayerName, PlayerLength, gridDims.width - 1, gridDims)
+    ball = spawnNewBall()
+
+    gameState = GameState(playerL, playerR, ball)
+    this
+  }
+
   def getCellType(p: Point): CellType = {
     if(playerL.body.contains(p) || playerR.body.contains(p)) PlayerBody
     else if(ball.position == p) BallBody
     else Empty
   }
-
 }
 
 /** GameLogic companion object */
@@ -63,29 +85,21 @@ object GameLogic {
 
   val FramesPerSecond: Int = 60// change this to increase/decrease speed of game
 
-  val PlayerLength: Int = 7
+  val PlayerLength: Int = 5
+  val LeftPlayerName = "Left Player"
+  val RightPlayerName = "Right Player"
+  val LeftPlayerId = 1
+  val RightPlayerId = 2
   val BallVelocity: Point = Point(1, 1)
+  val ScoreForWin = 9
+  val CountdownSeconds = 3
 
-  val DrawSizeFactor = 0.7// increase this to make the game bigger (for high-res screens)
-  // or decrease to make game smaller
-
-  // These are the dimensions used when playing the game.
-  // When testing the game, other dimensions are passed to
-  // the constructor of GameLogic.
-  //
-  // DO NOT USE the variable DefaultGridDims in your code!
-  //
-  // Doing so will cause tests which have different dimensions to FAIL!
-  //
-  // In your code only use gridDims.width and gridDims.height
-  // do NOT use DefaultGridDims.width and DefaultGridDims.height
-  val DefaultHeight = 40
+  val DrawSizeFactor = 1
+  val DefaultHeight = 32
   val DefaultWidth = (DefaultHeight * 1.5).toInt
   val DefaultGridDims
     : Dimensions =
     Dimensions(width = DefaultWidth, height = DefaultHeight)  // you can adjust these values to play on a different sized board
-
-
 
 }
 
